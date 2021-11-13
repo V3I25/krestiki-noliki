@@ -50,7 +50,7 @@ def draw_table():
         canvas.create_line(i*step_y, 0, i*step_y, size_canvas_y)
 
 
-points = []
+points = [[-1, -1, -1], [-1, -1, -1],[-1, -1, -1]]
 draw_table()
 
 
@@ -71,11 +71,17 @@ def draw_point(x, y, type):
     if type == 0:
         color = 'red'
         id = canvas.create_oval(
-            x * step_x, y * step_y, x * step_x + step_x, y * step_y + step_y, fill=color)
+            x * step_x +5, y * step_y + 5, x * step_x + step_x -5, y * step_y + step_y - 5, fill=color)
         id2 = canvas.create_oval(x * step_x + size, y * step_y + size, x *
                                  step_x + step_x - size, y * step_y + step_y - size, fill="white")
     if type == 1:
         color = "blue"
+        id = canvas.create_rectangle(
+            x * step_x + 5, y * step_y + step_y//2 - step_y//10, 
+            x * step_x + step_x - 5, y * step_y + step_y//2 + step_y//10, fill=color)
+        id2 = canvas.create_rectangle(
+            x * step_x + step_x//2 - step_x//10, y * step_y +5, 
+            x * step_x + step_x //2 + step_x//10, y * step_y + step_y -5, fill=color)
 
 
 def add_to_points(event):
@@ -83,9 +89,10 @@ def add_to_points(event):
     type = 0
     if event.num == 3:
         type = 1
-    points.append(Point(event.x // step_x, event.y // step_y, type))
-    draw_point(event.x // step_x, event.y // step_y, type)
-    print(" ".join(map(str, points)))
+    if points[event.x // step_x][event.y // step_y] == -1:
+        points[event.x // step_x][event.y // step_y] = type
+        draw_point(event.x // step_x, event.y // step_y, type)
+        #print(" ".join(map(str, points)))
 
 
 canvas.bind_all("<Button-1>", add_to_points)
