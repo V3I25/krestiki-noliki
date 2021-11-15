@@ -135,7 +135,20 @@ def check_winner(who):          #проверка горинтали и верт
                 win = False
         if win:
             return True
+    for i in range(0,s_y):          #проверка диагоналей
+        win = True
+        #print(points[i][i])
+        if points[i][i] != who:
+            win = False
+    if win:
+        return True
 
+    win = True
+    for i in range(0,s_y):
+        if points[i][2-i] != who:
+            win = False
+    if win:
+        return True
 
 # Если приложение запущено то мы делаем обновление экрана
 while app_running:
