@@ -51,6 +51,7 @@ def draw_table():
 
 
 points = [[-1, -1, -1], [-1, -1, -1],[-1, -1, -1]]
+list_ids = []
 draw_table()
 
 
@@ -71,9 +72,13 @@ def draw_point(x, y, type):
     if type == 0:
         color = 'red'
         id = canvas.create_oval(
-            x * step_x +5, y * step_y + 5, x * step_x + step_x -5, y * step_y + step_y - 5, fill=color)
-        id2 = canvas.create_oval(x * step_x + size, y * step_y + size, x *
-                                 step_x + step_x - size, y * step_y + step_y - size, fill="white")
+            x * step_x +5, y * step_y + 5, 
+            x * step_x + step_x -5, y * step_y + step_y - 5, fill=color)
+        id2 = canvas.create_oval(
+            x * step_x + size, y * step_y + size, 
+            x * step_x + step_x - size, y * step_y + step_y - size, fill="white")
+        list_ids.append(id)
+        list_ids.append(id2)
     if type == 1:
         color = "blue"
         id = canvas.create_rectangle(
@@ -82,21 +87,54 @@ def draw_point(x, y, type):
         id2 = canvas.create_rectangle(
             x * step_x + step_x//2 - step_x//10, y * step_y +5, 
             x * step_x + step_x //2 + step_x//10, y * step_y + step_y -5, fill=color)
-
+        list_ids.append(id)
+        list_ids.append(id2)
 
 def add_to_points(event):
-    print(event.num, event.x, event.y)
+    global points
+    #print(event.num, event.x, event.y)
     type = 0
     if event.num == 3:
         type = 1
     if points[event.x // step_x][event.y // step_y] == -1:
         points[event.x // step_x][event.y // step_y] = type
         draw_point(event.x // step_x, event.y // step_y, type)
+        if check_winner(type):
+            print("Победитель", type)
+            points = [[10, 10, 10], [10, 10, 10],[10, 10, 10]]
         #print(" ".join(map(str, points)))
 
 
 canvas.bind_all("<Button-1>", add_to_points)
 canvas.bind_all("<Button-3>", add_to_points)
+
+
+def button_press():
+    global points
+    global list_ids
+    for i in list_ids:
+        canvas.delete(i)
+    list_ids = []
+    points = [[-1, -1, -1], [-1, -1, -1],[-1, -1, -1]]
+
+b1 = Button(tk, text="Начать заново", command=button_press)
+b1.pack()
+
+def check_winner(who):          #проверка горинтали и вертикали
+    for j in range(0, s_y):
+        win = True
+        for i in range(0, s_x):
+            if points[j][i] != who:
+                win = False
+        if win:
+            return True
+    for j in range(0,s_y):
+        win = True
+        for i in range(0,s_x):
+            if points[i][j] != who:
+                win = False
+        if win:
+            return True
 
 
 # Если приложение запущено то мы делаем обновление экрана
